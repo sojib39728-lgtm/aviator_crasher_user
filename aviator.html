@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Royal Ping Casino · Secret Vault</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 10%, #1a1e0f, #0b0a07);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      padding: 1.5rem;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* casino pattern overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.06) 0px, rgba(212, 175, 55, 0.06) 2px, transparent 2px, transparent 12px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---------- LOADING SCREEN (initial & transitional) ---------- */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, #1f1b0c 0%, #0a0803 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.5s ease, visibility 0.5s;
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .loading-overlay.hidden {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .casino-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .roulette-spin {
+      font-size: 4.5rem;
+      color: #f5c542;
+      animation: spinLoader 0.9s infinite linear;
+      text-shadow: 0 0 30px #ffb703, 0 0 15px #b8860b;
+    }
+
+    @keyframes spinLoader {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      color: #e6c468;
+      text-shadow: 0 0 18px black;
+      animation: pulseText 1.2s infinite;
+    }
+
+    @keyframes pulseText {
+      0% { opacity: 0.7; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.03); }
+      100% { opacity: 0.7; transform: scale(0.98); }
+    }
+
+    .chip-stack {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .chip-stack i {
+      font-size: 2rem;
+      color: #d4af37;
+      animation: chipBounce 0.7s infinite alternate;
+    }
+    .chip-stack i:nth-child(2) { animation-delay: 0.15s; }
+    .chip-stack i:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes chipBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-12px); }
+    }
+
+    /* main casino card */
+    .casino-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 580px;
+      background: rgba(20, 20, 18, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 3.5rem 3.5rem 3rem 3rem;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(212, 175, 55, 0.25), inset 0 0 30px rgba(255, 215, 0, 0.2);
+      padding: 2.8rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      animation: cardFloat 4s infinite alternate ease-in-out;
+    }
+
+    @keyframes cardFloat {
+      0% { transform: translateY(0) rotateX(1deg); }
+      100% { transform: translateY(-8px) rotateX(0.5deg); }
+    }
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .casino-icon {
+      font-size: 2.8rem;
+      color: #f5c542;
+      text-shadow: 0 0 18px #ffaa00;
+      animation: iconPulse 1.8s infinite alternate;
+    }
+
+    @keyframes iconPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 2.4rem;
+      letter-spacing: 4px;
+      background: linear-gradient(180deg, #f9e076 10%, #d4af37 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glossy-input {
+      width: 100%;
+      background: rgba(10, 10, 8, 0.8);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(212, 175, 55, 0.7);
+      border-radius: 60px;
+      padding: 1.2rem 2rem;
+      font-size: 1.3rem;
+      color: #f7e9b0;
+      text-align: center;
+      letter-spacing: 3px;
+      outline: none;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5), inset 0 2px 10px rgba(255,255,200,0.3);
+      transition: all 0.4s;
+      margin: 1.8rem 0 2rem;
+    }
+
+    .glossy-input:focus {
+      border-color: #ffd966;
+      box-shadow: 0 0 35px #f5b81b;
+    }
+
+    .confirm-btn {
+      background: radial-gradient(circle at 30% 30%, #e6c468, #b38b2c);
+      border: none;
+      border-radius: 60px;
+      padding: 1.1rem 2.8rem;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      color: #0a0a00;
+      box-shadow: 0 12px 28px black, 0 0 25px #ffb703;
+      cursor: pointer;
+      transition: 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: 0.8rem;
+      animation: btnShine 3s infinite;
+    }
+
+    @keyframes btnShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .confirm-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 18px 36px black, 0 0 55px #ffaa00;
+    }
+
+    /* popup overlay */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.25s, opacity 0.3s;
+      padding: 1rem;
+    }
+
+    .popup-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .popup-window {
+      background: radial-gradient(ellipse at 20% 30%, #332c1c, #1a1307);
+      border: 2px solid #dbb42c;
+      border-radius: 3.2rem;
+      max-width: 420px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 0 70px rgba(212,175,55,0.9), 0 30px 50px black;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.35s ease;
+      animation: popIn 0.5s ease-out;
+    }
+
+    .popup-overlay.active .popup-window {
+      transform: scale(1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .custom-message {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: #fde482;
+      text-shadow: 0 0 18px #dba622;
+      margin-bottom: 0.5rem;
+    }
+
+
+    .close-btn {
+      background: #2a2416;
+      border: 1.5px solid #e4b13e;
+      color: #efdb9b;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.9rem 2.2rem;
+      border-radius: 3rem;
+      cursor: pointer;
+      margin-top: 1.2rem;
+      box-shadow: 0 8px 20px black;
+    }
+
+    .close-btn:hover {
+      background: #3b3119;
+      box-shadow: 0 0 40px #e6a817;
+    }
+
+    /* custom alert toast */
+    .toast-alert {
+      position: fixed;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e140a;
+      border: 1px solid #c9a53b;
+      color: #ffd966;
+      padding: 1rem 2.2rem;
+      border-radius: 50px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      backdrop-filter: blur(20px);
+      z-index: 2000;
+      box-shadow: 0 0 30px #b58b2c;
+      animation: slideDown 0.4s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    @keyframes slideDown {
+      0% { top: -80px; opacity: 0; }
+      100% { top: 25px; opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .casino-card { padding: 2rem 1.4rem; }
+      h2 { font-size: 1.5rem; }
+    }
+
+
+
+
+
+
+
+
+
+    /* terminal window – brutalist hacking vibe */
+     .terminal {
+      width: 100%;
+      max-width: 420px;
+      max-height: 420px;
+      background: #1d1d1d;
+      border: 1px solid #dc382d;
+      border-radius: 14px;
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.9),
+        0 0 25px rgba(220, 56, 45, 0.3),
+        inset 0 0 20px rgba(220, 56, 45, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s ease;
+      height: auto;
+      max-height: 420px;
+    }
+
+    /* Redis-style header */
+    .terminal-header {
+      background: #dc382d;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 2px solid #b83227;
+      background: linear-gradient(180deg, #dc382d 0%, #c53025 100%);
+      flex-shrink: 0;
+    }
+
+    .terminal-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-right: 0.8rem;
+    }
+
+    .terminal-btn {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffffff;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+      opacity: 0.9;
+    }
+
+    .btn-close {
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+    }
+    .btn-min {
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+    }
+    .btn-max {
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+    }
+
+    .terminal-title {
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fake-ip {
+      color: #ffffff;
+      font-size: 0.65rem;
+      background: rgba(0,0,0,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.3);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* console area - dark with red accents */
+    .console {
+      background: #121212;
+      background-image: 
+        linear-gradient(rgba(220, 56, 45, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220, 56, 45, 0.03) 1px, transparent 1px);
+      background-size: 16px 16px;
+      padding: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      color: #ff8c82;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      position: relative;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.95);
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+      font-weight: 400;
+      min-height: 0;
+      word-break: break-word;
+    }
+
+    /* custom scrollbar - red theme */
+    .console::-webkit-scrollbar {
+      width: 4px;
+    }
+    .console::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+    .console::-webkit-scrollbar-thumb {
+      background: #dc382d;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #dc382d;
+    }
+
+    #hackText {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      text-shadow: 0 0 8px rgba(220, 56, 45, 0.7);
+      letter-spacing: 0.3px;
+      transition: all 0.08s ease;
+      font-size: 0.78rem;
+      color: #ff6b6b;
+    }
+
+    /* blinking cursor - red theme */
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      height: 1.1em;
+      background: #dc382d;
+      box-shadow: 0 0 12px #dc382d, 0 0 25px #ff4444;
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blinkCursor 0.9s step-end infinite;
+      border-radius: 1px;
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { 
+        opacity: 1; 
+        background: #dc382d; 
+        box-shadow: 0 0 15px #dc382d, 0 0 30px #ff4444; 
+      }
+      50% { 
+        opacity: 0.1; 
+        background: #8b1a12; 
+        box-shadow: 0 0 3px #8b1a12; 
+      }
+    }
+
+    /* glitch effect - red version */
+    .glitch-active {
+      animation: textFlicker 0.18s infinite alternate;
+    }
+
+    @keyframes textFlicker {
+      0% { text-shadow: 2px 0 3px #dc382d, -2px 0 3px #ff4444; }
+      25% { text-shadow: -2px 0 2px #ff6b6b, 3px 0 4px #dc382d; }
+      50% { text-shadow: 0 0 5px #ff4444, 2px 0 6px #dc382d; }
+      75% { text-shadow: -3px 0 3px #dc382d, 2px 0 7px #ff6b6b; }
+      100% { text-shadow: 0 0 8px #ff4444, -2px 0 4px #dc382d; }
+    }
+
+    /* scanline overlay - red tint */
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(220, 56, 45, 0.04) 0px,
+        rgba(0, 0, 0, 0.2) 2px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .console-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* footer - Redis style */
+    .terminal-footer {
+      background: #dc382d;
+      padding: 0.4rem 1rem;
+      border-top: 2px solid #b83227;
+      display: flex;
+      justify-content: space-between;
+      color: #ffffff;
+      font-size: 0.6rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-weight: 600;
+      background: linear-gradient(180deg, #c53025 0%, #dc382d 100%);
+    }
+
+    .blink-dot {
+      color: #ffffff;
+      animation: blinkCursor 1.2s infinite;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    /* Redis logo-style elements */
+    .redis-accent {
+      color: #dc382d;
+      font-weight: bold;
+    }
+
+    /* responsive adjustments */
+    @media (max-width: 440px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .terminal {
+        max-width: 100%;
+        max-height: 420px;
+        border-radius: 10px;
+      }
+      
+      .console {
+        padding: 0.8rem;
+        font-size: 0.7rem;
+      }
+      
+      #hackText {
+        font-size: 0.7rem;
+      }
+      
+      .terminal-title {
+        font-size: 0.6rem;
+      }
+      
+      .fake-ip {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.4rem;
+      }
+      
+      .terminal-footer {
+        font-size: 0.55rem;
+        padding: 0.3rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .terminal-header {
+        padding: 0.4rem 0.6rem;
+      }
+      
+      .terminal-buttons {
+        gap: 0.3rem;
+        margin-right: 0.4rem;
+      }
+      
+      .terminal-btn {
+        width: 8px;
+        height: 8px;
+      }
+      
+      .console {
+        padding: 0.6rem;
+        font-size: 0.65rem;
+      }
+      
+      #hackText {
+        font-size: 0.65rem;
+      }
+    }
+
+
+
+
+  </style>
+</head>
+<body>
+  <!-- INITIAL LOADING SCREEN (shown until page fully ready) -->
+  <div id="initialLoading" class="loading-overlay">
+    <div class="casino-loader">
+      <i class="fas fa-dice roulette-spin"></i>
+      <div class="loading-text">SHUFFLING</div>
+      <div class="chip-stack">
+        <i class="fas fa-coins"></i>
+        <i class="fas fa-coins"></i>
+        <i class="fas fa-coins"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSITIONAL LOADING (used before showing popup) -->
+  <div id="transitionLoading" class="loading-overlay hidden">
+    <div class="casino-loader">
+      <i class="fas fa-crown roulette-spin" style="font-size: 4rem;"></i>
+      <div class="loading-text">VERIFYING</div>
+      <div class="chip-stack">
+        <i class="fas fa-gem"></i>
+        <i class="fas fa-gem"></i>
+        <i class="fas fa-gem"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main casino card -->
+  <div class="casino-card">
+    <div class="title-section">
+      <i class="fas fa-dice-d20 casino-icon"></i>
+      <h2 style="text-align: center;">AVIATOR PREDICTOR</h2>
+      <i class="fas fa-crown casino-icon"></i>
+    </div>
+    <div style="margin: 10px 0;">
+      <img style="width:100px; height: 100px; border-radius: 50%; border: 3px solid #ffaa00; margin: auto;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0UWAe9uZWToHc2b6V6aokQ6Hbd5Yj3TRdHQ&s">
+    </div>
+    <input type="password" id="secretInput" class="glossy-input" placeholder="✦ Enter code ✦" autocomplete="off">
+    <button id="confirmButton" class="confirm-btn">
+      <i class="fas fa-key"></i> CONFIRM <i class="fas fa-diamond"></i>
+    </button>
+  </div>
+
+  <!-- POPUP -->
+  <div id="popupOverlay" class="popup-overlay">
+    <div class="popup-window">
+      <div id="customMessage" class="custom-message"> Not Connected!</div>
+      <div>
+        <p style="text-align:center; color: #2291ff; margin: 10px 0; font-weight: bold; font-size: .9rem;">Deposit 4500 Tk from a Super Agent</p>
+      </div>
+      <!-- For text animation-->
+      <div class="textanim">
+            <div class="terminal">
+              <div class="terminal-header">
+                <div class="terminal-buttons">
+                  <div class="terminal-btn btn-close"></div>
+                  <div class="terminal-btn btn-min"></div>
+                  <div class="terminal-btn btn-max"></div>
+                </div>
+                <div class="terminal-title">root@darknet:~# stream</div>
+                <div class="fake-ip">192.168.**.⋮</div>
+              </div>
+
+              <div class="console-wrapper">
+                <div class="console" id="consoleContainer">
+                  <div id="hackText"></div>
+                  <div class="scanline"></div>
+                </div>
+              </div>
+
+              <div class="terminal-footer">
+                <span><span class="blink-dot">●</span> DEACTIVE</span>
+                <span>AES-256</span>
+                <span id="liveCounter">PKTS: 0</span>
+              </div>
+            </div>
+
+      </div>
+
+      <button id="closePopupBtn" class="close-btn">
+        <i class="fas fa-door-open"></i> CLOSE <i class="fas fa-door-closed"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // SECRET CODE
+      const SECRET_CODE = "1";
+
+      // DOM elements
+      const secretInput = document.getElementById('secretInput');
+      const confirmBtn = document.getElementById('confirmButton');
+      const popupOverlay = document.getElementById('popupOverlay');
+      const customMessageEl = document.getElementById('customMessage');
+      const pingNumberEl = document.getElementById('pingNumber');
+      const closePopupBtn = document.getElementById('closePopupBtn');
+      const initialLoading = document.getElementById('initialLoading');
+      const transitionLoading = document.getElementById('transitionLoading');
+
+      let pingInterval = null;
+
+      // Random ping 50-100
+      function getRandomPing() {
+        return Math.floor(Math.random() * 51) + 50; // 50..100
+      }
+
+      function updatePingDisplay() {
+        if (pingNumberEl) {
+          pingNumberEl.textContent = getRandomPing();
+        }
+      }
+
+      function startPingUpdates() {
+        stopPingUpdates();
+        updatePingDisplay();
+        pingInterval = setInterval(updatePingDisplay, 1080);
+      }
+
+      function stopPingUpdates() {
+        if (pingInterval) {
+          clearInterval(pingInterval);
+          pingInterval = null;
+        }
+      }
+
+      // Show custom alert (toast style) instead of popup for wrong code
+      function showAlertMessage(message) {
+        // Remove existing toast if any
+        const existingToast = document.querySelector('.toast-alert');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'toast-alert';
+        toast.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.transition = 'opacity 0.4s';
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 400);
+        }, 2200);
+      }
+
+      // Show popup with message (only for correct code after loading)
+      function showPopup(message) {
+        customMessageEl.textContent = message;
+        startPingUpdates();
+        popupOverlay.classList.add('active');
+      }
+
+      function hidePopup() {
+        popupOverlay.classList.remove('active');
+        stopPingUpdates();
+      }
+
+      // Transitional loading: show for a short time then proceed
+      function showTransitionLoading(callback) {
+        transitionLoading.classList.remove('hidden');
+        // Simulate network/casino verification (minimum 1.2s)
+        setTimeout(() => {
+          transitionLoading.classList.add('hidden');
+          if (callback) callback();
+        }, 13000);
+      }
+
+      // Handle confirm button
+      function handleConfirm() {
+        const enteredCode = secretInput.value.trim();
+        
+        if (enteredCode === "") {
+          showAlertMessage("Enter valid code to access the hack");
+          return;
+        }
+
+        // Check code (case-insensitive)
+        if (enteredCode.toUpperCase() === SECRET_CODE) {
+          // CORRECT CODE: show transitional loading then popup
+          secretInput.value = ''; // clear input
+          showTransitionLoading(() => {
+            showPopup("Not Connected!");
+          });
+        } else {
+          // WRONG CODE: show alert, do NOT show popup
+          showAlertMessage("⛔ ACCESS DENIED · INVALID CODE");
+          secretInput.value = '';
+        }
+      }
+
+      // ---- Event Listeners ----
+      confirmBtn.addEventListener('click', handleConfirm);
+      secretInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleConfirm();
+        }
+      });
+
+      // Close button inside popup (only way to close)
+      closePopupBtn.addEventListener('click', hidePopup);
+
+      // PREVENT closing when clicking outside popup (overlay click disabled intentionally)
+      popupOverlay.addEventListener('click', (e) => {
+        // Do nothing if clicking overlay background – popup stays.
+        // Only close if explicitly via close button.
+        e.stopPropagation();
+      });
+
+      // Escape key also blocked to enforce close button only? We'll allow Escape as extra convenience,
+      // but user asked only close button. To be strict, we disable Escape close.
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && popupOverlay.classList.contains('active')) {
+          // Prevent default and do NOT close (only close button)
+          e.preventDefault();
+          // optionally show small hint
+          showAlertMessage("🔒 Use the CLOSE button to exit.");
+        }
+      });
+
+      // Initial page loading animation
+      window.addEventListener('load', () => {
+        // Keep initial loading visible at least 1.5s for effect
+        setTimeout(() => {
+          initialLoading.classList.add('hidden');
+        }, 5000);
+      });
+
+      // Cleanup
+      window.addEventListener('beforeunload', () => {
+        stopPingUpdates();
+      });
+
+      // Set initial ping number
+      if (pingNumberEl) pingNumberEl.textContent = getRandomPing();
+    })();
+
+
+
+
+    //For text animation
+     (function() {
+      // Compact hacking text animation - optimized for 420x420
+      
+      const textElement = document.getElementById('hackText');
+      const consoleContainer = document.getElementById('consoleContainer');
+      const counterSpan = document.getElementById('liveCounter');
+      
+      // Shorter lines for compact display
+      const linesPool = [
+        "[*] Init secure tunnel...",
+        "[+] Bypass firewall v2.3",
+        "[!] IDS triggered!",
+        "[~] Spoof MAC: 0A:1B:2C",
+        "[>] Inject payload...",
+        "[#] Decrypt layer 4/7",
+        "root@ghost:~$ nmap -sS",
+        "22/tcp open ssh",
+        "443/tcp open https",
+        "[*] Exploit: CVE-2024",
+        "[✓] Root access OK",
+        "[*] Dump hash...",
+        "root:$6$k8Gp...",
+        "[■□□□□] 12% ETA 4m",
+        "[■■■□□] 47% ETA 1m",
+        "[■■■■■] 100% done",
+        "[~] Rev shell :4444",
+        "bash-5.1# whoami",
+        "root",
+        "[*] Exfil data 2.4MB",
+        "[DATA] 7a9f3c...",
+        ">>> SNIFFER ACTIVE <<<",
+        "eth0: 192.168.1.105",
+        "[!] Honeypot detect",
+        "tor-circuit: OK",
+        "[*] Ransomware sim",
+        "Encrypting... 100%",
+        "[SYSTEM] Granted.",
+        "> _"
+      ];
+
+      const hexBlobs = [
+        "0x7F2A89C4",
+        "b8:27:eb:4f",
+        "a1b2c3d4",
+        "deadbeef",
+        "31337_h4x"
+      ];
+
+      // Configuration for compact display
+      const TYPE_SPEED_MS = 22;
+      const PAUSE_BETWEEN_LINES = 350;
+      const MAX_VISIBLE_LINES = 10;
+      
+      let currentLineIndex = 0;
+      let charIndex = 0;
+      let currentFullText = "";
+      let isTyping = false;
+      let typingTimer = null;
+      let glitchInterval = null;
+      let packetCounter = 0;
+      
+      const cursorSpan = document.createElement('span');
+      cursorSpan.className = 'cursor';
+      
+      function getRandomLine() {
+        if (Math.random() < 0.1) {
+          return hexBlobs[Math.floor(Math.random() * hexBlobs.length)];
+        }
+        return linesPool[Math.floor(Math.random() * linesPool.length)];
+      }
+
+      function incrementPacketCounter() {
+        packetCounter += Math.floor(Math.random() * 5) + 1;
+        if (counterSpan) {
+          counterSpan.textContent = `PKTS: ${packetCounter}`;
+        }
+        if (packetCounter > 999) {
+          packetCounter = Math.floor(Math.random() * 200);
+        }
+      }
+
+      function appendCharacter(char) {
+        if (!textElement) return;
+        
+        let currentContent = textElement.textContent || "";
+        
+        if (charIndex === 0) {
+          if (currentContent.length > 0) {
+            currentContent += "\n";
+          }
+        }
+        
+        currentContent += char;
+        textElement.textContent = currentContent;
+        
+        if (consoleContainer) {
+          consoleContainer.scrollTop = consoleContainer.scrollHeight;
+        }
+        
+        const lines = currentContent.split('\n');
+        if (lines.length > MAX_VISIBLE_LINES) {
+          const trimmed = lines.slice(lines.length - MAX_VISIBLE_LINES).join('\n');
+          textElement.textContent = trimmed;
+          
+          const newLines = trimmed.split('\n');
+          const lastLine = newLines[newLines.length - 1] || "";
+          if (lastLine.length <= currentFullText.length) {
+            charIndex = lastLine.length;
+          } else {
+            charIndex = lastLine.length;
+            currentFullText = lastLine;
+          }
+        }
+        
+        ensureCursorAttached();
+      }
+
+      function ensureCursorAttached() {
+        if (!textElement) return;
+        if (cursorSpan.parentNode) {
+          cursorSpan.remove();
+        }
+        if (consoleContainer && textElement.parentNode === consoleContainer) {
+          consoleContainer.appendChild(cursorSpan);
+        } else {
+          textElement.parentNode?.appendChild(cursorSpan);
+        }
+      }
+
+      function startNewLine() {
+        currentFullText = getRandomLine();
+        charIndex = 0;
+        isTyping = true;
+        
+        if (typingTimer) clearTimeout(typingTimer);
+        typeNextCharacter();
+      }
+
+      function typeNextCharacter() {
+        if (!isTyping) return;
+        
+        if (charIndex >= currentFullText.length) {
+          isTyping = false;
+          if (typingTimer) clearTimeout(typingTimer);
+          
+          incrementPacketCounter();
+          
+          typingTimer = setTimeout(() => {
+            startNewLine();
+          }, PAUSE_BETWEEN_LINES + Math.floor(Math.random() * 150));
+          
+          return;
+        }
+        
+        const nextChar = currentFullText.charAt(charIndex);
+        appendCharacter(nextChar);
+        charIndex++;
+        
+        let speed = TYPE_SPEED_MS;
+        if (Math.random() < 0.06) {
+          speed = TYPE_SPEED_MS * 2.5 + Math.random() * 80;
+        } else if (Math.random() < 0.12) {
+          speed = TYPE_SPEED_MS * 0.5;
+        }
+        
+        typingTimer = setTimeout(typeNextCharacter, speed);
+      }
+
+      function applyRandomGlitch() {
+        if (!textElement) return;
+        textElement.classList.add('glitch-active');
+        
+        const glitchDuration = Math.random() * 150 + 50;
+        setTimeout(() => {
+          textElement.classList.remove('glitch-active');
+        }, glitchDuration);
+      }
+
+      function startGlitchEffect() {
+        if (glitchInterval) clearInterval(glitchInterval);
+        glitchInterval = setInterval(() => {
+          if (Math.random() < 0.2) {
+            applyRandomGlitch();
+          }
+          if (Math.random() < 0.35) {
+            incrementPacketCounter();
+          }
+        }, 700);
+      }
+
+      function initHackingAnimation() {
+        if (!textElement || !consoleContainer) return;
+        
+        textElement.textContent = "";
+        charIndex = 0;
+        currentFullText = "";
+        isTyping = false;
+        if (typingTimer) clearTimeout(typingTimer);
+        
+        ensureCursorAttached();
+        startGlitchEffect();
+        startNewLine();
+      }
+
+      window.addEventListener('resize', () => {
+        if (consoleContainer) {
+          consoleContainer.scrollTop = consoleContainer.scrollHeight;
+        }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        if (typingTimer) clearTimeout(typingTimer);
+        if (glitchInterval) clearInterval(glitchInterval);
+      });
+
+      window.addEventListener('DOMContentLoaded', initHackingAnimation);
+    })();
+  </script>
+</body>
+</html>
